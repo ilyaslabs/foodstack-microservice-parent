@@ -1,0 +1,9 @@
+name: Call CI/CD Release Workflow
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    uses: ilyaslabs/foodstack-cicd/.github/workflows/release.yml@main
