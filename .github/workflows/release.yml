@@ -1,9 +1,36 @@
-name: Call CI/CD Release Workflow
+name: Release to Maven Central
 
 on:
   release:
     types: [published]
 
 jobs:
-  release:
-    uses: ilyaslabs/foodstack-cicd/.github/workflows/release.yml@main
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout release tag
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.release.tag_name }}
+      - name: Extract version from tag
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: corretto
+          java-version: 21
+          server-id: central
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: GPG_PASSPHRASE
+      - name: Deploy to Maven Central
+        run: mvn clean deploy -B -U -DskipTests -Drevision=${VERSION} -Prelease
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
