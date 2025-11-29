@@ -3,9 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.0</version>
+        <groupId>io.github.ilyaslabs</groupId>
+        <artifactId>spring-boot-microservice-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -42,163 +42,24 @@
 
     <properties>
         <revision>1.0-SNAPSHOT</revision> <!-- will be overridden when maven deployed -->
-        <java.version>25</java.version>
-        <maven.compiler.source>25</maven.compiler.source>
-        <maven.compiler.target>25</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-cloud.version>2025.1.0-RC1</spring-cloud.version>
-        <mockserver-client-java.version>5.15.0</mockserver-client-java.version>
-        <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
-        <maven-javadoc-plugin.version>3.7.0</maven-javadoc-plugin.version>
-        <maven-gpg-plugin.version>3.2.3</maven-gpg-plugin.version>
-        <central-publishing-maven-plugin.version>0.8.0</central-publishing-maven-plugin.version>
-        <ilyas-spring-boot-microservice-security-jwt.version>3.0.0</ilyas-spring-boot-microservice-security-jwt.version>
-        <ilyas-spring-boot-microservice-test-common.version>1.0-SNAPSHOT</ilyas-spring-boot-microservice-test-common.version>
-        <ilyas-spring-boot-microservice-auth-client.version>1.0-SNAPSHOT</ilyas-spring-boot-microservice-auth-client.version>
-        <foodstack-auth-service.version>1.0-SNAPSHOT</foodstack-auth-service.version>
+        <auth-service.version>1.0-SNAPSHOT</auth-service.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.mock-server</groupId>
-                <artifactId>mockserver-client-java</artifactId>
-                <version>${mockserver-client-java.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.github.ilyaslabs</groupId>
-                <artifactId>spring-boot-microservice-security-jwt</artifactId>
-                <version>${ilyas-spring-boot-microservice-security-jwt.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.github.ilyaslabs</groupId>
-                <artifactId>spring-boot-microservice-auth-client</artifactId>
-                <version>${ilyas-spring-boot-microservice-auth-client.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.github.ilyaslabs</groupId>
-                <artifactId>spring-boot-microservice-test-common</artifactId>
-                <version>${ilyas-spring-boot-microservice-test-common.version}</version>
-                <scope>test</scope>
-            </dependency>
-
             <!-- Auth service -->
             <dependency>
                 <groupId>io.github.ilyaslabs.foodstack.authservice</groupId>
                 <artifactId>auth-service-client</artifactId>
-                <version>${foodstack-auth-service.version}</version>
+                <version>${auth-service.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.ilyaslabs.foodstack.authservice</groupId>
+                <artifactId>security-common</artifactId>
+                <version>${auth-service.version}</version>
             </dependency>
             <!-- Auth service -->
         </dependencies>
     </dependencyManagement>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>${maven-gpg-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <gpgArguments>
-                        <arg>--pinentry-mode</arg>
-                        <arg>loopback</arg>
-                    </gpgArguments>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.sonatype.central</groupId>
-                <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>${central-publishing-maven-plugin.version}</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <publishingServerId>central</publishingServerId>
-                    <autoPublish>true</autoPublish>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>3.3.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.12.0</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </path>
-                        <path>
-                            <groupId>org.springframework.boot</groupId>
-                            <artifactId>spring-boot-configuration-processor</artifactId>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>flatten-maven-plugin</artifactId>
-                <version>1.7.2</version>
-                <configuration>
-                    <updatePomFile>true</updatePomFile>
-                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>flatten</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>flatten</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>flatten.clean</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>
